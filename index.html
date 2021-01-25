@@ -165,8 +165,38 @@
                 text1.text = 'вы навели на меш: ' + mesh.name
                 // rect1 И text1 из tooltip.js
                 console.log(` ${text1.text}`);
-                
+
             }
+
+            // UI
+
+            var UiPanel = new BABYLON.GUI.StackPanel();
+            UiPanel.width = "300px";
+            UiPanel.fontSize = "16px";
+            UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+            advancedTexture.addControl(UiPanel);
+            // ..
+            var button = BABYLON.GUI.Button.CreateSimpleButton("but1", "Play");
+            button.paddingTop = "10px";
+            button.width = "100px";
+            button.height = "50px";
+            button.color = "white";
+            button.background = "blue";
+            button.onPointerDownObservable.add(() => {
+                scene.animationGroups[0].start(true);
+            });
+            UiPanel.addControl(button);
+            var button = BABYLON.GUI.Button.CreateSimpleButton("but2", "Stop");
+            button.paddingTop = "10px";
+            button.width = "100px";
+            button.height = "50px";
+            button.color = "white";
+            button.background = "green";
+            button.onPointerDownObservable.add(() => {
+                scene.animationGroups[0].stop();
+            });
+            UiPanel.addControl(button);
 
 
             return scene;
@@ -183,8 +213,18 @@
             // myMesh1.rotation.y = Math.PI / 2;
             console.dir(`Имя первого меша: ${result.meshes[1].name}`);
 
+
+
             let _meshes = result.meshes
             _meshes.forEach(mesh => {
+                //animations find
+                if (mesh.animations.length > 0) {
+                    console.log(`меш ${mesh.name} - имеет ${mesh.animations.length} анимаций`);
+                } else {
+                    console.log(`анимаций в меше: ${mesh.name} - нет!`);
+                }
+
+
                 mesh.actionManager = new BABYLON.ActionManager(scene);
                 mesh.actionManager
                     .registerAction(
@@ -202,8 +242,9 @@
                     .then(
                         new BABYLON.ExecuteCodeAction(
                             BABYLON.ActionManager.OnPointerOutTrigger,
-                            function () { scene.hl2.removeMesh(mesh)  // зажигаем новый активный меш
-                            scene.beginAnimation(scene.rect1, 0, 10, false)
+                            function () {
+                                scene.hl2.removeMesh(mesh)  // зажигаем новый активный меш
+                                scene.beginAnimation(scene.rect1, 0, 10, false)
                             }
                         )
                     )
